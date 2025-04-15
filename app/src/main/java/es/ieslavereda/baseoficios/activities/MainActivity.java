@@ -1,22 +1,25 @@
 package es.ieslavereda.baseoficios.activities;
 
+import static es.ieslavereda.baseoficios.base.Parameters.URL_IMAGE_BASE;
+
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Map;
 
 import es.ieslavereda.baseoficios.API.Connector;
 import es.ieslavereda.baseoficios.R;
 import es.ieslavereda.baseoficios.activities.model.Usuario;
 import es.ieslavereda.baseoficios.base.BaseActivity;
 import es.ieslavereda.baseoficios.base.CallInterface;
+import es.ieslavereda.baseoficios.base.ImageDownloader;
 
-public class MainActivity extends BaseActivity implements CallInterface {
-
-    private Usuario usuario;
+public class MainActivity extends BaseActivity implements CallInterface<Usuario> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +32,31 @@ public class MainActivity extends BaseActivity implements CallInterface {
             return insets;
         });
 
-        // Mostramos la barra de progreso y ejecutamos la llamada a la API
-        showProgress();
+        // Ejecutamos una llamada para obtener datos de la API
         executeCall(this);
 
     }
 
-    // Realizamos la llamada y recogemos los datos en un objeto Usuario
+    // Realizamos la llamada en segundo plano y recogemos los datos en un objeto
     @Override
-    public void doInBackground() {
-        usuario = Connector.getConector().get(Usuario.class);
+    public Usuario doInBackground() throws Exception {
+
+        return Connector.getConector().get(Usuario.class,"");
+
     }
 
+    // Una vez finalizada la tarea en segundo plano, ejecutamos en primer plano (UI)
     @Override
-    public void doInUI() {
-        hideProgress();
+    public void doInUI(Usuario usuario) {
+
+        ImageDownloader.downloadImage(URL_IMAGE_BASE + "albañil.png", findViewById(R.id.imageView));
+
     }
+
+//    Si queremos variar que hacer si se produce un error descomentar
+//    @Override
+//    public void doInError(Context context, Exception e) {
+//
+//    }
+
 }

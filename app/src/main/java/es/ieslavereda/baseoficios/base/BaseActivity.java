@@ -27,12 +27,21 @@ public class BaseActivity extends AppCompatActivity {
         progressBar = new MyProgressBar(this);
     }
 
-    protected void executeCall(CallInterface callInterface){
+    protected <T> void executeCall(CallInterface<T> callInterface){
         executor.execute(() -> {
-            callInterface.doInBackground();
-            handler.post(() -> {
-                callInterface.doInUI();
-            });
+            try {
+                showProgress();
+                T data = callInterface.doInBackground();
+                handler.post(() -> {
+                    hideProgress();
+                    callInterface.doInUI(data);
+                });
+            } catch (Exception e){
+                handler.post(()->{
+                    hideProgress();
+                    callInterface.doInError(BaseActivity.this,e);
+                });
+            }
         });
     }
 
