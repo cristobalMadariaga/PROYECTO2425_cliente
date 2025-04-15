@@ -28,9 +28,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected <T> void executeCall(CallInterface<T> callInterface){
+        showProgress();
         executor.execute(() -> {
             try {
-                showProgress();
                 T data = callInterface.doInBackground();
                 handler.post(() -> {
                     hideProgress();
