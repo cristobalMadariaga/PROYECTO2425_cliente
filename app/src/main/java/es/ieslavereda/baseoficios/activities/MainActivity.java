@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity implements CallInterface<Usuario>
 
     }
 
-    // Realizamos la llamada en segundo plano y recogemos los datos en un objeto
+    // Realizamos la llamada en segundo plano y devolvemos el objeto obtenido
     @Override
     public Usuario doInBackground() throws Exception {
 
@@ -45,7 +45,8 @@ public class MainActivity extends BaseActivity implements CallInterface<Usuario>
 
     }
 
-    // Una vez finalizada la tarea en segundo plano, ejecutamos en primer plano (UI)
+    // Una vez finalizada la tarea en segundo plano, ejecutamos en primer plano (UI).
+    // Recibimos por parametro lo obtenido en segundo plano.
     @Override
     public void doInUI(Usuario usuario) {
 
