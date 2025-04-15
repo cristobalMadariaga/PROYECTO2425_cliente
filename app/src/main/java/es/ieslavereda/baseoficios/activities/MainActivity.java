@@ -3,14 +3,11 @@ package es.ieslavereda.baseoficios.activities;
 import static es.ieslavereda.baseoficios.base.Parameters.URL_IMAGE_BASE;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.util.Map;
 
 import es.ieslavereda.baseoficios.API.Connector;
 import es.ieslavereda.baseoficios.R;
