@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements CallInterface<Usuario>
     @Override
     public void doInUI(Usuario usuario) {
 
-        ImageDownloader.downloadImage(URL_IMAGE_BASE + "albañil.png", findViewById(R.id.imageView));
+//        ImageDownloader.downloadImage(URL_IMAGE_BASE + "albañil.png", findViewById(R.id.imageView));
 
     }
 

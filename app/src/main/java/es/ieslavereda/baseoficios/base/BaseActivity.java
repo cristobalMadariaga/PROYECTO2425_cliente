@@ -59,7 +59,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layout){
         super.setContentView(layout);
-        ViewGroup rootView = (ViewGroup) ((ViewGroup) this .findViewById(android.R.id.content)).getChildAt(0);
+        ViewGroup rootView = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         progressBar.initControl(rootView);
         hideProgress();
     }
