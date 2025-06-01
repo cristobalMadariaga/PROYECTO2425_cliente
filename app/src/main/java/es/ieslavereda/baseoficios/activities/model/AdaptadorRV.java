@@ -10,17 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import es.ieslavereda.baseoficios.API.Connector;
 import es.ieslavereda.baseoficios.R;
-import es.ieslavereda.baseoficios.activities.MainActivity;
-import es.ieslavereda.baseoficios.base.BaseActivity;
-import es.ieslavereda.baseoficios.base.CallInterface;
 import es.ieslavereda.baseoficios.base.ImageDownloader;
-import es.ieslavereda.baseoficios.base.Parameters;
 
 public class AdaptadorRV extends
         RecyclerView.Adapter<AdaptadorRV.ViewHolder> {
@@ -30,8 +23,9 @@ public class AdaptadorRV extends
     private List<Usuario> usuarios;
     private View.OnClickListener onClickListener;
     private Map<Integer, Oficio> mapaOficios;
-
-
+    public void setMapaOficios(Map<Integer, Oficio> mapaOficios) {
+        this.mapaOficios = mapaOficios;
+    }
 
     public AdaptadorRV(Context context, List<Usuario> usuarios, View.OnClickListener onClickListener){
         this.context = context;
@@ -52,21 +46,15 @@ public class AdaptadorRV extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Usuario usuario = usuarios.get(position);
-        holder.nombreTV.setText(usuario.getNombre()+ " "+ usuario.getApellidos());
-        CallInterface<String> CARGAR_IMAGEN = new CallInterface<String>() {
-            @Override
-            public String doInBackground() throws Exception {
-                return Connector.getConector().get(String.class, "oficios/imagen/" + usuario.getOficio_idOficio());
-            }
+        holder.nombreTV.setText(usuario.getNombre() + " " + usuario.getApellidos());
+        Oficio oficio = mapaOficios.get(usuario.getOficio_idOficio());
 
-            @Override
-            public void doInUI(String data) {
-                ImageDownloader.downloadImage(URL_IMAGE_BASE + data, holder.oficioIV);
-            }
-        };
-
-
+        if (oficio != null) {
+            holder.oficioTV.setText(oficio.getDescripcion());
+            ImageDownloader.downloadImage(URL_IMAGE_BASE + oficio.getImage(), holder.oficioIV);
+        }
     }
+
 
     @Override
     public int getItemCount() {

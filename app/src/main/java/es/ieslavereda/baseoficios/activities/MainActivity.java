@@ -15,11 +15,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.ieslavereda.baseoficios.API.Connector;
 import es.ieslavereda.baseoficios.R;
 import es.ieslavereda.baseoficios.activities.model.AdaptadorRV;
+import es.ieslavereda.baseoficios.activities.model.Oficio;
 import es.ieslavereda.baseoficios.activities.model.Usuario;
 import es.ieslavereda.baseoficios.base.BaseActivity;
 import es.ieslavereda.baseoficios.base.CallInterface;
@@ -34,6 +37,9 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
     private Usuario usuarioInsertar;
     private int posicionInsertar;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private List<Oficio> listaOficios;
+    private Map<Integer, Oficio> mapaOficios;
+
     private CallInterface<Usuario> INSERTAR_USUARIO = new CallInterface<Usuario>() {
         @Override
         public Usuario doInBackground() throws Exception {
@@ -65,23 +71,19 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
                                 Intent data = result.getData();
                                 if (data.hasExtra("usuarioActualizado")) {
                                     Usuario usuarioActualizado = (Usuario) data.getSerializableExtra("usuarioActualizado");
-
-                                    // Buscar la posición en la lista
                                     int index = -1;
                                     for (int i = 0; i < usuarios.size(); i++) {
                                         if (usuarios.get(i).getIdUsuario() == usuarioActualizado.getIdUsuario()) {
                                             index = i;
-                                            break;
                                         }
                                     }
-
                                     if (index != -1) {
                                         usuarios.set(index, usuarioActualizado);
                                         recyclerView.getAdapter().notifyItemChanged(index);
                                     }
                                 } else if (data.hasExtra("usuarioInsertado")) {
-                                    Usuario usuarioNuevo = (Usuario) data.getSerializableExtra("usuarioInsertado");
-                                    usuarios.add(usuarioNuevo);
+                                    Usuario usuarioInsertado = (Usuario) data.getSerializableExtra("usuarioInsertado");
+                                    usuarios.add(usuarioInsertado);
                                     recyclerView.getAdapter().notifyItemInserted(usuarios.size() - 1);
                                 }
                             }
@@ -120,6 +122,35 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
         showProgress();
         //ejecutamos la llamada a la API
         executeCall(this);
+        cargarOficios();
+
+    }
+
+    private void cargarOficios() {
+        executeCall(new CallInterface<List<Oficio>>() {
+            @Override
+            public List<Oficio> doInBackground() throws Exception {
+                return Connector.getConector().getAsList(Oficio.class, "oficios/");
+            }
+
+            @Override
+            public void doInUI(List<Oficio> data) {
+                listaOficios = data;
+                mapaOficios = new HashMap<>();
+                for (Oficio oficio : listaOficios) {
+                    mapaOficios.put(oficio.getIdOficio(), oficio);
+                }
+                if (usuarios != null) {
+                    configurarAdaptador();
+                }
+            }
+        });
+    }
+    private void configurarAdaptador() {
+        AdaptadorRV adaptador = new AdaptadorRV(this, usuarios, this);
+        adaptador.setMapaOficios(mapaOficios);
+        recyclerView.setAdapter(adaptador);
+        hideProgress();
     }
 
 
@@ -132,8 +163,9 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
     @Override
     public void doInUI(List<Usuario> data) {
         usuarios = data;
-        AdaptadorRV adaptador = new AdaptadorRV(this, usuarios,this);
-        recyclerView.setAdapter(adaptador);
+        if (mapaOficios != null) {
+            configurarAdaptador();
+        }
 
     }
 
