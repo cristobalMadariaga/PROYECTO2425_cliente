@@ -1,5 +1,7 @@
 package es.ieslavereda.baseoficios.activities.model;
 
+import static es.ieslavereda.baseoficios.base.Parameters.URL_IMAGE_BASE;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import es.ieslavereda.baseoficios.API.Connector;
 import es.ieslavereda.baseoficios.R;
 import es.ieslavereda.baseoficios.activities.MainActivity;
 import es.ieslavereda.baseoficios.base.BaseActivity;
+import es.ieslavereda.baseoficios.base.CallInterface;
 import es.ieslavereda.baseoficios.base.ImageDownloader;
 import es.ieslavereda.baseoficios.base.Parameters;
 
@@ -24,6 +29,9 @@ public class AdaptadorRV extends
     private LayoutInflater layoutInflater;
     private List<Usuario> usuarios;
     private View.OnClickListener onClickListener;
+    private Map<Integer, Oficio> mapaOficios;
+
+
 
     public AdaptadorRV(Context context, List<Usuario> usuarios, View.OnClickListener onClickListener){
         this.context = context;
@@ -45,7 +53,17 @@ public class AdaptadorRV extends
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Usuario usuario = usuarios.get(position);
         holder.nombreTV.setText(usuario.getNombre()+ " "+ usuario.getApellidos());
+        CallInterface<String> CARGAR_IMAGEN = new CallInterface<String>() {
+            @Override
+            public String doInBackground() throws Exception {
+                return Connector.getConector().get(String.class, "oficios/imagen/" + usuario.getOficio_idOficio());
+            }
 
+            @Override
+            public void doInUI(String data) {
+                ImageDownloader.downloadImage(URL_IMAGE_BASE + data, holder.oficioIV);
+            }
+        };
 
 
     }
@@ -54,6 +72,7 @@ public class AdaptadorRV extends
     public int getItemCount() {
         return usuarios.size();
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView oficioIV;

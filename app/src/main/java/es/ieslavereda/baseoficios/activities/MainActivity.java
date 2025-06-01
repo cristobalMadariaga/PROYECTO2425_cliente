@@ -33,6 +33,7 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
     private FloatingActionButton buttonAnyadir;
     private Usuario usuarioInsertar;
     private int posicionInsertar;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
     private CallInterface<Usuario> INSERTAR_USUARIO = new CallInterface<Usuario>() {
         @Override
         public Usuario doInBackground() throws Exception {
@@ -57,15 +58,35 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ActivityResultLauncher<Intent> activityResultLauncher =
+        activityResultLauncher =
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                         result -> {
-                            if(result.getResultCode() == RESULT_OK){
-                                Usuario pais = (Usuario) result.getData().getExtras().getSerializable("usuario");
-                                usuarios.add(pais);
-                                recyclerView.getAdapter().notifyItemInserted(usuarios.size()-1);
+                            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                                Intent data = result.getData();
+                                if (data.hasExtra("usuarioActualizado")) {
+                                    Usuario usuarioActualizado = (Usuario) data.getSerializableExtra("usuarioActualizado");
+
+                                    // Buscar la posición en la lista
+                                    int index = -1;
+                                    for (int i = 0; i < usuarios.size(); i++) {
+                                        if (usuarios.get(i).getIdUsuario() == usuarioActualizado.getIdUsuario()) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    if (index != -1) {
+                                        usuarios.set(index, usuarioActualizado);
+                                        recyclerView.getAdapter().notifyItemChanged(index);
+                                    }
+                                } else if (data.hasExtra("usuarioInsertado")) {
+                                    Usuario usuarioNuevo = (Usuario) data.getSerializableExtra("usuarioInsertado");
+                                    usuarios.add(usuarioNuevo);
+                                    recyclerView.getAdapter().notifyItemInserted(usuarios.size() - 1);
+                                }
                             }
                         });
+
 
         buttonAnyadir.setOnClickListener( view -> {
             Intent intent = new Intent(this, DetailActivity.class);
@@ -102,6 +123,7 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
     }
 
 
+
     @Override
     public List<Usuario> doInBackground() throws Exception {
         return Connector.getConector().getAsList(Usuario.class,"usuarios/");
@@ -121,7 +143,7 @@ public class MainActivity extends BaseActivity implements CallInterface<List<Usu
         Usuario usuario = usuarios.get(posicion);
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("usuario", usuario);
-        startActivity(intent);
+        activityResultLauncher.launch(intent);
     }
 
     private void eliminarUsuario(Usuario usuario){
