@@ -4,6 +4,8 @@ package es.ieslavereda.baseoficios.API;
 import java.util.List;
 import java.util.Map;
 
+import es.ieslavereda.baseoficios.activities.model.Oficio;
+import es.ieslavereda.baseoficios.base.CallInterface;
 import es.ieslavereda.baseoficios.base.Parameters;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -76,6 +78,7 @@ public class Connector {
             return conversor.fromJson(jsonResponse, clazz);
         return null;
     }
+
 
 }
 

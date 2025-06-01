@@ -6,14 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.squareup.picasso.Picasso;
-
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import es.ieslavereda.baseoficios.R;
+import es.ieslavereda.baseoficios.activities.MainActivity;
+import es.ieslavereda.baseoficios.base.BaseActivity;
+import es.ieslavereda.baseoficios.base.ImageDownloader;
+import es.ieslavereda.baseoficios.base.Parameters;
 
 public class AdaptadorRV extends
         RecyclerView.Adapter<AdaptadorRV.ViewHolder> {
@@ -42,10 +44,10 @@ public class AdaptadorRV extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Usuario usuario = usuarios.get(position);
-        holder.nombreTV.setText(usuario.getNombre());
-//        holder.oficioTV.setText();
-        //pillar con picasso las imagenes del url
-//        Picasso.get().load(oficio.getImage()).into(holder.oficioIV);
+        holder.nombreTV.setText(usuario.getNombre()+ " "+ usuario.getApellidos());
+
+
+
     }
 
     @Override
@@ -54,8 +56,8 @@ public class AdaptadorRV extends
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        private ImageView oficioIV;
-        private TextView nombreTV, oficioTV;
+        public ImageView oficioIV;
+        public TextView nombreTV, oficioTV;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             oficioIV = itemView.findViewById(R.id.oficioIV);

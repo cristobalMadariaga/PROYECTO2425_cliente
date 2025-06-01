@@ -1,15 +1,17 @@
 package es.ieslavereda.baseoficios.activities.model;
 
-public class Usuario {
+import java.io.Serializable;
 
-    private int idUsuario, Oficio_idOficio;
+public class Usuario implements Serializable {
+
+    private int idUsuario, oficio_idOficio;
     private String nombre, apellidos;
 
-    public Usuario(int idUsuario, String nombre, String apellidos, int Oficio_idOficio){
+    public Usuario(int idUsuario, String nombre, String apellidos, int oficio_idOficio){
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellidos = apellidos;
-        this.Oficio_idOficio = Oficio_idOficio;
+        this.oficio_idOficio = oficio_idOficio;
     }
 
     public int getIdUsuario() {
@@ -17,7 +19,7 @@ public class Usuario {
     }
 
     public int getOficio_idOficio() {
-        return Oficio_idOficio;
+        return oficio_idOficio;
     }
 
     public String getNombre() {

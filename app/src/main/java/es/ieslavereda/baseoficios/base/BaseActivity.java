@@ -27,7 +27,7 @@ public class BaseActivity extends AppCompatActivity {
         progressBar = new MyProgressBar(this);
     }
 
-    protected <T> void executeCall(CallInterface<T> callInterface){
+    public <T> void executeCall(CallInterface<T> callInterface){
         showProgress();
         executor.execute(() -> {
             try {

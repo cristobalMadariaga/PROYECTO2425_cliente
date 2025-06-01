@@ -1,6 +1,10 @@
 package es.ieslavereda.baseoficios.activities.model;
 
-public class Oficio {
+import java.io.Serializable;
+
+public class Oficio implements Serializable {
+
+
 
     private int idOficio;
     private String descripcion, image;
@@ -23,4 +27,15 @@ public class Oficio {
         return image;
     }
 
+    public void setIdOficio(int idOficio) {
+        this.idOficio = idOficio;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
